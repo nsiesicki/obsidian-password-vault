@@ -1,6 +1,6 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, FileView } from 'obsidian';
-import * as encryption from './components/Encryption'
-import { SampleSettingTab } from './components/SettingsPlugin'
+import * as encryption from './src/Encryption'
+import { SampleSettingTab } from './src/SettingsPlugin'
 
 const envPath = (app.vault.adapter as any).basePath + "/.obsidian/plugins/obsidian-password-vault/.env"
 require('dotenv').config({path: envPath})

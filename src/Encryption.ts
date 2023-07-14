@@ -1,6 +1,7 @@
 import { App, WorkspaceLeaf, Notice, FileView} from 'obsidian';
 import { PasswordPrompt, NewPasswordPrompt } from './PasswordPrompt';
-import * as cryptoSource from './cryptsidian.mjs'; //does this need to be converted w/ path for x-OS?
+import * as cryptoSource from './cryptsidian'; //does this need to be converted w/ path for x-OS?
+import {renameFiles} from './RenameFiles'
 
 /* How to implement it.
 new PasswordPrompt(this.app, (password: String) => {
@@ -38,15 +39,12 @@ export function runEncryption (settings: any) {
       // console.log(`Password: ${password}, Decrypted: ${decryptedPlainText} and Original: ${process.env.SECRET_KEY}`)
 
       if (process.env.SECRET_KEY == decryptedPlainText){
-        new Notice(`Password correct, your data will be encrypted.`);
 
         if (operation == 'DECRYPT'){
-          const Path = require('path')
-          const vaultPath = (app.vault.adapter as any).basePath
-          const { promises: Fs } = require('fs')
-          const oldPath = Path.join(vaultPath, settings.file_name + ".md.encrypted")  
-          const newPath = Path.join(vaultPath, settings.file_name + ".md")
-          Fs.rename(oldPath, newPath)  
+          new Notice(`Password correct, your data was decrypted.`);
+          renameFiles(settings.file_name + ".md.encrypted", settings.file_name + ".md");
+        }else {
+          new Notice(`Password correct, your data was encrypted.`);
         }
 
         //derive the secret key via scrypt from user's password.
@@ -77,12 +75,7 @@ export function runEncryption (settings: any) {
           cryptoSource.fileProcessor(files, operation); 
 
           if (operation == 'ENCRYPT'){
-            const Path = require('path')
-            const vaultPath = (app.vault.adapter as any).basePath
-            const { promises: Fs } = require('fs')
-            const oldPath = Path.join(vaultPath, settings.file_name + ".md")  
-            const newPath = Path.join(vaultPath, settings.file_name + ".md.encrypted")
-            Fs.rename(oldPath, newPath)  
+            renameFiles(settings.file_name + ".md", settings.file_name + ".md.encrypted");
           }
         }
         
